@@ -5,19 +5,29 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.snackbar.Snackbar
+import hobby.wei.c.reflow.Pulse
 import hobby.wei.c.reflow.Reflow
+import hobby.wei.c.reflow.Task.Context
 import hobby.wei.c.reflow.implicits.P_NORMAL
 import hobby.wei.c.reflow.implicits.SHORT
 import hobby.wei.c.reflow.lite.Input
 import hobby.wei.c.reflow.lite.Lite
 import hobby.wei.c.reflow.lite.Task
+import hobby.wei.c.reflow.visual.compat.classTag
 import hobby.wei.c.reflow.visual.databinding.ActivityMainBinding
-import scala.reflect.ClassTag
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import scala.Option
+import scala.runtime.AbstractFunction2
+
+//import hobby.wei.c.reflow.Pulse.`Feedback$`.`MODULE$`
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,20 +36,24 @@ class MainActivity : AppCompatActivity() {
 
     private val task: Lite<String, String> =
         Task.apply(
-            SHORT(), P_NORMAL(), null, null, true,
-            object : scala.Function2<String, hobby.wei.c.reflow.Task.Context, String> {
-                override fun apply(v1: String?, v2: hobby.wei.c.reflow.Task.Context?): String {
+            SHORT(), P_NORMAL(), "task name", null, true,
+            object : AbstractFunction2<String, Context, String>() {
+                override fun apply(s: String?, ctx: Context?): String {
                     TODO("Not yet implemented")
                 }
             },
-            ClassTag.apply(String::class.java), ClassTag.apply(String::class.java)
+            classTag.string, classTag.string
         )
 
-    private val pulse by lazy {
-        Reflow.setDebugMode(true)
-        Input<String>(ClassTag.apply(String::class.java)).next(task) { String::class.java }
-            .pulse(null, false, 128, 17, false, null, null)
-    }
+//    private val pulse by lazy {
+//        Reflow.setDebugMode(true)
+//        Input(classTag.string).next(task, classTag.string)
+//            .pulse(object : `MODULE$`.Lite<String>(0) {
+//                override fun liteOnComplete(serialNum: Long, value: Option<String>?) {
+//                    TODO("Not yet implemented")
+//                }
+//            }, false, 128, 17, false, null, null)
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -60,6 +74,9 @@ class MainActivity : AppCompatActivity() {
                 .setAction("Action", null).show()
         }
 
+        lifecycleScope.launch(Dispatchers.IO) {
+
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

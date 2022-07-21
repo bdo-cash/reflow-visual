@@ -13,5 +13,9 @@ dependencyResolutionManagement {
         maven { url 'https://jitpack.io' }
     }
 }
+
+include ':app',// ':reflow'
+
 rootProject.name = "reflow-visual"
-include ':app'
+
+//project(':reflow').projectDir = new File('./reflow')
